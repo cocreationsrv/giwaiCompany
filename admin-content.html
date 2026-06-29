@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GY CMS · コンテンツ編集 | 运营管理后台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============ Shared admin foundation (mirrors admin-dashboard) ============ */
+    :root {
+      --blue-1: #E8EEF8; --blue-2: #C9D7EE; --blue-3: #A1B7DF; --blue-4: #7396CD;
+      --blue-5: #4576B8; --blue-6: #014099; --blue-7: #013785; --blue-8: #002E70; --blue-9: #001A47;
+      --accent: #C73E3A; --accent-soft: #E8716D; --accent-deep: #A8302C; --accent-bg: rgba(199,62,58,0.08);
+      --success: #00875A; --success-bg: rgba(0,135,90,0.08); --success-border: rgba(0,135,90,0.25);
+      --warning: #D97706; --warning-bg: rgba(217,119,6,0.08); --warning-border: rgba(217,119,6,0.25);
+      --error: #C73E3A; --error-bg: rgba(199,62,58,0.08); --error-border: rgba(199,62,58,0.25);
+      --text: rgba(15,26,46,0.92); --text-secondary: rgba(15,26,46,0.68);
+      --text-muted: rgba(15,26,46,0.48); --text-disabled: rgba(15,26,46,0.28);
+      --border: rgba(15,26,46,0.08); --border-strong: rgba(15,26,46,0.16); --divider: rgba(15,26,46,0.06);
+      --bg-page: #F5F7FA; --bg-surface: #FFFFFF; --bg-tint: #F5F8FC;
+      --bg-sidebar: #001229; --bg-sidebar-hover: rgba(255,255,255,0.05);
+      --bg-sidebar-active: var(--blue-6);
+      --text-sidebar: rgba(255,255,255,0.65); --text-sidebar-strong: rgba(255,255,255,0.95);
+      --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px;
+      --fs-xs: 12px; --fs-sm: 13px; --fs-base: 14px; --fs-lg: 16px; --fs-xl: 20px; --fs-2xl: 24px;
+      --font-sans: 'Inter', 'Noto Sans JP', 'Noto Sans SC', system-ui, sans-serif;
+      --radius-sm: 4px; --radius-md: 6px; --radius-lg: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(15,26,46,.04);
+      --shadow-md: 0 1px 4px rgba(15,26,46,.06), 0 1px 6px rgba(15,26,46,.04);
+      --shadow-lg: 0 6px 16px 0 rgba(15,26,46,.08), 0 3px 6px -4px rgba(15,26,46,.10);
+      --shadow-primary: 0 8px 24px rgba(1,64,153,.14);
+      --t-fast: 200ms; --ease: cubic-bezier(0.4,0,0.2,1);
+      --sidebar-w: 240px; --sidebar-w-collapsed: 64px; --topbar-h: 56px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body { font-family: var(--font-sans); font-size: var(--fs-base); color: var(--text); background: var(--bg-page); line-height: 1.5715; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+    .app { display: flex; min-height: 100vh; }
+
+    /* sidebar */
+    .sidebar {
+      width: var(--sidebar-w); background: var(--bg-sidebar); color: var(--text-sidebar);
+      flex-shrink: 0; display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh;
+      transition: width var(--t-fast) var(--ease);
+    }
+    .sidebar.collapsed { width: var(--sidebar-w-collapsed); }
+    .sidebar.collapsed .nav-label, .sidebar.collapsed .nav-section-title,
+    .sidebar.collapsed .logo-text, .sidebar.collapsed .nav-badge { display: none; }
+    .sidebar.collapsed .nav-item { justify-content: center; padding: 10px; }
+    .sidebar-header { height: var(--topbar-h); padding: 0 var(--s-4); display: flex; align-items: center; gap: var(--s-3); border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--blue-5), var(--blue-7));
+      color: #fff; display: grid; place-items: center;
+      font-weight: 700; letter-spacing: -0.05em;
+      border-radius: var(--radius-sm); font-size: 14px; flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 4px 12px rgba(1,64,153,0.25);
+    }
+    .logo-text { color: var(--text-sidebar-strong); font-weight: 600; font-size: 15px; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; }
+    .logo-text small { display: block; font-size: 10px; color: var(--text-sidebar); font-weight: 400; letter-spacing: 0.18em; margin-top: 2px; }
+
+    .nav { flex: 1; padding: var(--s-4) 0; overflow-y: auto; }
+    .nav::-webkit-scrollbar { width: 6px; }
+    .nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+    .nav-section { margin-bottom: var(--s-6); }
+    .nav-section-title { display: block; padding: 0 var(--s-4) var(--s-2); font-size: 11px; letter-spacing: 0.15em; color: rgba(255,255,255,0.35); font-weight: 500; text-transform: uppercase; }
+    .nav-item {
+      display: flex; align-items: center; gap: var(--s-3);
+      padding: 10px var(--s-4); margin: 0 var(--s-2);
+      border-radius: var(--radius-sm); color: var(--text-sidebar);
+      font-size: var(--fs-base);
+      transition: all var(--t-fast) var(--ease); position: relative;
+    }
+    .nav-item:hover { color: var(--text-sidebar-strong); background: var(--bg-sidebar-hover); }
+    .nav-item.active { color: #fff; background: var(--bg-sidebar-active); box-shadow: 0 4px 12px rgba(1,64,153,0.4); }
+    .nav-item.active::before { content: ''; position: absolute; left: -8px; top: 50%; transform: translateY(-50%); width: 2px; height: 60%; background: #fff; }
+    .nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .nav-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .nav-badge { padding: 2px 6px; background: var(--accent); color: #fff; font-size: 10px; border-radius: 9px; font-weight: 600; letter-spacing: 0.04em; }
+    .nav-badge.muted { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); }
+    .nav-badge.warning { background: var(--warning); }
+
+    /* main */
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      height: var(--topbar-h); background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--s-6); position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-left { display: flex; align-items: center; gap: var(--s-4); }
+    .menu-toggle { width: 32px; height: 32px; display: grid; place-items: center; border-radius: var(--radius-sm); transition: background var(--t-fast); color: var(--text-secondary); }
+    .menu-toggle:hover { background: var(--blue-1); color: var(--blue-6); }
+    .breadcrumb { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-base); color: var(--text-muted); }
+    .breadcrumb .current { color: var(--text); font-weight: 500; }
+    .topbar-right { display: flex; align-items: center; gap: var(--s-2); }
+    .icon-btn { width: 36px; height: 36px; display: grid; place-items: center; border-radius: var(--radius-sm); color: var(--text-secondary); transition: all var(--t-fast); position: relative; }
+    .icon-btn:hover { background: var(--blue-1); color: var(--blue-6); }
+    .icon-btn .dot { position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 2px #fff; }
+    .topbar-divider { width: 1px; height: 20px; background: var(--border-strong); margin: 0 8px; }
+    .user-chip { display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 4px; border-radius: 20px; transition: background var(--t-fast); }
+    .user-chip:hover { background: var(--bg-tint); }
+    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--blue-5), var(--blue-7)); color: #fff; display: grid; place-items: center; font-weight: 600; font-size: 13px; }
+    .user-name { font-size: var(--fs-sm); font-weight: 500; }
+    .user-role { font-size: 11px; color: var(--text-muted); }
+
+    /* btn */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; height: 32px; border-radius: var(--radius-sm); font-size: var(--fs-base); transition: all var(--t-fast); font-weight: 500; border: 1px solid transparent; }
+    .btn-primary { background: var(--blue-6); color: #fff; box-shadow: 0 2px 8px rgba(1,64,153,0.18); }
+    .btn-primary:hover { background: var(--blue-7); box-shadow: var(--shadow-primary); transform: translateY(-1px); }
+    .btn-default { background: #fff; color: var(--text); border-color: var(--border-strong); }
+    .btn-default:hover { color: var(--blue-6); border-color: var(--blue-6); }
+    .btn-ghost { background: transparent; color: var(--text-secondary); border-color: var(--border-strong); }
+    .btn-ghost:hover { color: var(--blue-6); border-color: var(--blue-6); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #006B47; transform: translateY(-1px); }
+    .btn-icon { width: 32px; height: 32px; padding: 0; display: grid; place-items: center; }
+
+    /* tag */
+    .tag { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: var(--fs-xs); font-weight: 600; border: 1px solid transparent; letter-spacing: 0.02em; }
+    .tag.blue    { background: var(--blue-1);     color: var(--blue-7);  border-color: var(--blue-2); }
+    .tag.green   { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+    .tag.orange  { background: var(--warning-bg); color: var(--warning); border-color: var(--warning-border); }
+    .tag.red     { background: var(--error-bg);   color: var(--error);   border-color: var(--error-border); }
+    .tag.gray    { background: var(--bg-tint);    color: var(--text-secondary); border-color: var(--border-strong); }
+
+    /* ============ Editor-specific styles ============ */
+    .editor-shell {
+      display: grid;
+      grid-template-columns: 280px 1fr 320px;
+      flex: 1;
+      min-height: 0;
+    }
+    .col {
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    .col:last-child { border-right: none; border-left: 1px solid var(--border); background: var(--bg-page); }
+
+    /* === Column 1: Item list === */
+    .list-head {
+      padding: var(--s-4); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--bg-surface); z-index: 1;
+    }
+    .list-search {
+      position: relative; margin-bottom: var(--s-3);
+    }
+    .list-search input {
+      width: 100%; padding: 8px 12px 8px 34px;
+      border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+      font-size: var(--fs-sm); background: var(--bg-tint);
+      transition: all var(--t-fast);
+    }
+    .list-search input:focus { outline: none; border-color: var(--blue-6); background: #fff; box-shadow: 0 0 0 3px rgba(1,64,153,.08); }
+    .list-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .list-tabs { display: flex; gap: 4px; }
+    .list-tab {
+      padding: 5px 10px; font-size: var(--fs-xs); font-weight: 600;
+      letter-spacing: 0.05em; border-radius: var(--radius-sm);
+      color: var(--text-muted); transition: all var(--t-fast);
+    }
+    .list-tab.active { background: var(--blue-1); color: var(--blue-6); }
+    .list-tab:hover:not(.active) { color: var(--text); background: var(--bg-tint); }
+    .list-tab .cnt { margin-left: 4px; opacity: 0.7; }
+
+    .list-items { padding: var(--s-2); }
+    .list-item {
+      display: grid; grid-template-columns: 56px 1fr;
+      gap: 10px; padding: 10px; border-radius: var(--radius-sm);
+      cursor: pointer; transition: all var(--t-fast);
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+    }
+    .list-item:hover { background: var(--bg-tint); }
+    .list-item.active { background: var(--blue-1); border-color: var(--blue-2); }
+    .list-item-thumb {
+      aspect-ratio: 1;
+      background: var(--bg-tint); border-radius: var(--radius-sm);
+      overflow: hidden; flex-shrink: 0;
+    }
+    .list-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .list-item-body { min-width: 0; }
+    .list-item-title { font-size: var(--fs-sm); font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .list-item-meta { display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--text-muted); }
+    .list-item-status {
+      width: 6px; height: 6px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .list-item-status.published { background: var(--success); }
+    .list-item-status.draft     { background: var(--text-muted); }
+    .list-item-status.scheduled { background: var(--warning); }
+
+    /* === Column 2: Editor === */
+    .editor-head {
+      padding: 12px var(--s-5);
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; flex-wrap: wrap;
+      position: sticky; top: 0; background: var(--bg-surface); z-index: 1;
+    }
+    .editor-head-left { display: flex; align-items: center; gap: var(--s-2); }
+    .lang-tabs {
+      display: inline-flex; background: var(--bg-tint);
+      padding: 3px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .lang-tab {
+      padding: 5px 14px; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.08em; border-radius: 3px;
+      color: var(--text-muted); transition: all var(--t-fast);
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .lang-tab.active { background: var(--blue-6); color: #fff; box-shadow: 0 2px 4px rgba(1,64,153,0.15); }
+    .lang-tab:hover:not(.active) { color: var(--text); }
+    .lang-tab .check { color: var(--success); font-size: 11px; }
+    .lang-tab.active .check { color: rgba(255,255,255,.85); }
+
+    .editor-head-right { display: flex; gap: 8px; align-items: center; }
+    .save-status {
+      font-size: 12px; color: var(--text-muted);
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .save-status::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--success);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .editor-body { padding: var(--s-5) var(--s-6); max-width: 880px; margin: 0 auto; }
+    .editor-body > * + * { margin-top: var(--s-4); }
+
+    .field-label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; letter-spacing: 0.15em; font-weight: 600;
+      color: var(--blue-6); margin-bottom: 6px; text-transform: uppercase;
+    }
+    .field-label .hint { color: var(--text-muted); font-weight: 400; letter-spacing: 0.02em; text-transform: none; font-size: 11px; }
+
+    .field-title input {
+      width: 100%; padding: 10px 0;
+      border: none; border-bottom: 2px solid var(--border-strong);
+      font-family: var(--font-sans); font-size: 28px; font-weight: 700; line-height: 1.3;
+      color: var(--text); background: transparent;
+      transition: border-color var(--t-fast);
+    }
+    .field-title input:focus { outline: none; border-bottom-color: var(--blue-6); }
+
+    .field-slug {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; background: var(--bg-tint);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font-family: 'Inter', monospace; font-size: 13px;
+      color: var(--text-muted);
+    }
+    .field-slug .domain { color: var(--text-muted); }
+    .field-slug input {
+      border: none; background: transparent; flex: 1;
+      font: inherit; color: var(--blue-6); font-weight: 600;
+    }
+    .field-slug input:focus { outline: none; }
+    .field-slug .auto {
+      font-size: 11px; padding: 2px 8px; background: #fff;
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--success);
+    }
+
+    .field-input input,
+    .field-input textarea {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+      font: inherit; font-size: 14px; line-height: 1.6;
+      color: var(--text); background: #fff;
+      transition: all var(--t-fast);
+    }
+    .field-input input:focus,
+    .field-input textarea:focus { outline: none; border-color: var(--blue-6); box-shadow: 0 0 0 3px rgba(1,64,153,.08); }
+    .field-input textarea { resize: vertical; min-height: 88px; }
+
+    /* Featured image upload area */
+    .field-image .upload-area {
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: var(--s-5);
+      background: var(--bg-tint);
+      display: grid; place-items: center;
+      text-align: center;
+      transition: all var(--t-fast);
+      cursor: pointer;
+      position: relative;
+      min-height: 200px;
+    }
+    .field-image .upload-area:hover { border-color: var(--blue-6); background: var(--blue-1); }
+    .field-image .upload-area.has-image { padding: 0; border-style: solid; overflow: hidden; }
+    .field-image .upload-area.has-image img { width: 100%; height: 280px; object-fit: cover; }
+    .field-image .upload-area.has-image .overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      opacity: 0; transition: opacity var(--t-fast);
+    }
+    .field-image .upload-area.has-image:hover .overlay { opacity: 1; }
+    .upload-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--blue-1); color: var(--blue-6); display: grid; place-items: center; margin-bottom: 12px; }
+    .field-image .hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+    /* Rich text editor */
+    .rt-editor {
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      overflow: hidden;
+    }
+    .rt-toolbar {
+      display: flex; gap: 2px; align-items: center;
+      padding: 6px; border-bottom: 1px solid var(--border);
+      background: var(--bg-tint);
+      flex-wrap: wrap;
+    }
+    .rt-btn {
+      width: 30px; height: 30px;
+      display: grid; place-items: center;
+      border-radius: 3px; color: var(--text-secondary);
+      transition: all var(--t-fast);
+      font-size: 12px; font-weight: 600;
+    }
+    .rt-btn:hover { background: #fff; color: var(--blue-6); }
+    .rt-btn.active { background: var(--blue-1); color: var(--blue-6); }
+    .rt-divider { width: 1px; height: 18px; background: var(--border-strong); margin: 0 4px; }
+    .rt-select {
+      padding: 4px 8px; height: 28px;
+      font-size: 12px; font-weight: 500;
+      border: 1px solid var(--border); border-radius: 3px;
+      background: #fff; color: var(--text-secondary);
+    }
+    .rt-content {
+      padding: var(--s-4);
+      min-height: 360px;
+      font-size: 15px; line-height: 1.85;
+      color: var(--text);
+    }
+    .rt-content h2 { font-size: 22px; font-weight: 700; margin: 16px 0 8px; color: var(--text); line-height: 1.3; }
+    .rt-content h3 { font-size: 18px; font-weight: 700; margin: 14px 0 6px; color: var(--text); }
+    .rt-content p { margin: 0 0 12px; }
+    .rt-content ul, .rt-content ol { margin: 8px 0 12px; padding-left: 24px; }
+    .rt-content li { margin-bottom: 4px; }
+    .rt-content blockquote {
+      border-left: 3px solid var(--blue-6);
+      padding: 8px 16px;
+      background: var(--bg-tint);
+      color: var(--text-secondary);
+      font-style: italic;
+      margin: 12px 0;
+    }
+    .rt-content a { color: var(--blue-6); border-bottom: 1px solid var(--blue-3); }
+    .rt-content code { background: var(--bg-tint); padding: 2px 6px; border-radius: 3px; font-size: 13px; font-family: 'Inter', monospace; color: var(--accent); }
+    .rt-content [contenteditable]:focus { outline: none; }
+
+    .rt-foot {
+      padding: 6px 12px; border-top: 1px solid var(--border);
+      background: var(--bg-tint);
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--text-muted);
+    }
+
+    /* tags input */
+    .tag-input {
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+      padding: 6px 10px; min-height: 40px;
+      border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+      background: #fff;
+    }
+    .tag-input:focus-within { border-color: var(--blue-6); box-shadow: 0 0 0 3px rgba(1,64,153,.08); }
+    .tag-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; background: var(--blue-1); color: var(--blue-7);
+      font-size: 12px; font-weight: 600; border-radius: 3px;
+    }
+    .tag-pill .x { cursor: pointer; opacity: 0.6; transition: opacity var(--t-fast); }
+    .tag-pill .x:hover { opacity: 1; color: var(--accent); }
+    .tag-input input { border: none; outline: none; flex: 1; min-width: 100px; font: inherit; font-size: 13px; padding: 4px; }
+
+    /* === Column 3: Settings === */
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin: var(--s-3);
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .panel-head h4 { font-size: var(--fs-sm); font-weight: 600; margin: 0; color: var(--text); letter-spacing: 0.02em; display: inline-flex; align-items: center; gap: 6px; }
+    .panel-head h4 svg { color: var(--blue-6); }
+    .panel-body { padding: 12px 14px; }
+    .panel-body > * + * { margin-top: 12px; }
+
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: var(--fs-sm); }
+    .row .k { color: var(--text-muted); font-size: 12px; }
+    .row .v { color: var(--text); font-weight: 500; }
+
+    /* toggle switch */
+    .toggle {
+      position: relative; width: 36px; height: 20px;
+      background: var(--border-strong); border-radius: 10px;
+      transition: background var(--t-fast);
+      flex-shrink: 0;
+    }
+    .toggle::after {
+      content: ''; position: absolute; left: 2px; top: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: left var(--t-fast);
+    }
+    .toggle.on { background: var(--blue-6); }
+    .toggle.on::after { left: 18px; }
+
+    /* select */
+    select.s-select {
+      width: 100%; padding: 7px 10px;
+      border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+      font: inherit; font-size: 13px;
+      background: #fff;
+    }
+    select.s-select:focus { outline: none; border-color: var(--blue-6); }
+
+    .seo-preview {
+      padding: 10px;
+      background: var(--bg-tint);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+    }
+    .seo-preview .url { font-size: 12px; color: var(--success); margin-bottom: 4px; }
+    .seo-preview .title { font-size: 16px; color: #1a0dab; margin-bottom: 2px; line-height: 1.3; }
+    .seo-preview .desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .seo-meter { display: flex; gap: 4px; margin-top: 6px; }
+    .seo-meter span { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+    .seo-meter span.good { background: var(--success); }
+    .seo-meter span.ok { background: var(--warning); }
+
+    .related-list { display: flex; flex-direction: column; gap: 6px; }
+    .related-item {
+      display: flex; gap: 8px; padding: 6px 8px;
+      background: var(--bg-tint); border-radius: var(--radius-sm);
+      align-items: center; font-size: 12px;
+    }
+    .related-item .ico { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+    .related-item .name { flex: 1; color: var(--text); }
+    .related-item .x { color: var(--text-muted); cursor: pointer; transition: color var(--t-fast); }
+    .related-item .x:hover { color: var(--accent); }
+
+    /* Responsive */
+    @media (max-width: 1280px) {
+      .editor-shell { grid-template-columns: 240px 1fr 280px; }
+    }
+    @media (max-width: 1024px) {
+      .editor-shell { grid-template-columns: 1fr; }
+      .col:nth-child(1), .col:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- ============ Sidebar ============ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-mark">GY</div>
+        <div class="logo-text">GY CMS<small>運営管理</small></div>
+      </div>
+      <nav class="nav">
+        <div class="nav-section">
+          <span class="nav-section-title">概覧</span>
+          <a href="admin-dashboard.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span class="nav-label">仪表盘</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+            <span class="nav-label">数据分析</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <span class="nav-section-title">運営管理</span>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span class="nav-label">询盘管理</span>
+            <span class="nav-badge">12</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13l2 2 4-4"/></svg>
+            <span class="nav-label">案件・項目</span>
+            <span class="nav-badge muted">18</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            <span class="nav-label">顧客管理</span>
+            <span class="nav-badge muted">64</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M12 14c-3 0-9 1.5-9 5v3h18v-3c0-3.5-6-5-9-5z"/></svg>
+            <span class="nav-label">担当者・チーム</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+            <span class="nav-label">スケジュール</span>
+            <span class="nav-badge warning">3</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <span class="nav-section-title">コンテンツ</span>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-label">ホームページ</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            <span class="nav-label">事業領域</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span class="nav-label">実績・ケース</span>
+          </a>
+          <a href="admin-content.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>
+            <span class="nav-label">お知らせ・新闻</span>
+            <span class="nav-badge">3</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            <span class="nav-label">多言語コンテンツ</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <span class="nav-section-title">システム</span>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg>
+            <span class="nav-label">ユーザー権限</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09A1.65 1.65 0 0015 4.6a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9z"/></svg>
+            <span class="nav-label">システム設定</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- ============ Main ============ -->
+    <div class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" aria-label="切换侧栏">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div class="breadcrumb">
+            <a href="admin-dashboard.html">運営管理</a>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            <span>コンテンツ</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            <span class="current">お知らせ・新闻</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" aria-label="搜索"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
+          <button class="icon-btn" aria-label="通知"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span class="dot"></span></button>
+          <span class="topbar-divider"></span>
+          <a href="#" class="user-chip">
+            <div class="user-avatar">郭</div>
+            <div><div class="user-name">郭　英</div><div class="user-role">运营管理员</div></div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Editor shell: 3 columns -->
+      <div class="editor-shell">
+
+        <!-- ===== Column 1: Item list ===== -->
+        <aside class="col">
+          <div class="list-head">
+            <div style="display:flex; gap:6px; margin-bottom: var(--s-3);">
+              <button class="btn btn-primary" style="flex:1;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                新規作成
+              </button>
+              <button class="btn btn-default btn-icon" aria-label="フィルター"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
+            </div>
+            <div class="list-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" placeholder="タイトル・本文検索...">
+            </div>
+            <div class="list-tabs">
+              <button class="list-tab active">全て<span class="cnt">14</span></button>
+              <button class="list-tab">公開<span class="cnt">10</span></button>
+              <button class="list-tab">下書き<span class="cnt">3</span></button>
+              <button class="list-tab">予約<span class="cnt">1</span></button>
+            </div>
+          </div>
+
+          <div class="list-items">
+            <div class="list-item active">
+              <div class="list-item-thumb"><img src="https://picsum.photos/seed/news-feat-launch/120/120" alt="" data-replaceable></div>
+              <div class="list-item-body">
+                <div class="list-item-title">商務日本語研修プログラムを正式リリース。第一期 5月15日開講</div>
+                <div class="list-item-meta">
+                  <span class="list-item-status published"></span>
+                  <span>公開中</span>
+                  <span>·</span>
+                  <span>2026.05.07</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-thumb"><img src="https://picsum.photos/seed/news-event-tour-may/120/120" alt="" data-replaceable></div>
+              <div class="list-item-body">
+                <div class="list-item-title">5月度 視察団募集 — 大阪美容業界 5日間プログラム</div>
+                <div class="list-item-meta">
+                  <span class="list-item-status published"></span>
+                  <span>公開中</span><span>·</span><span>2026.05.05</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-thumb"><img src="https://picsum.photos/seed/news-pr-spa-tokyo/120/120" alt="" data-replaceable></div>
+              <div class="list-item-body">
+                <div class="list-item-title">医美 SPA 集団「翠玉堂」東京・銀座旗艦店オープン支援を完了</div>
+                <div class="list-item-meta">
+                  <span class="list-item-status published"></span>
+                  <span>公開中</span><span>·</span><span>2026.04.28</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-thumb"><img src="https://picsum.photos/seed/news-draft-q2-report/120/120" alt="" data-replaceable></div>
+              <div class="list-item-body">
+                <div class="list-item-title">2026 Q2 中国美容市場レポート（仮）</div>
+                <div class="list-item-meta">
+                  <span class="list-item-status draft"></span>
+                  <span>下書き</span><span>·</span><span>編集中</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-thumb"><img src="https://picsum.photos/seed/news-scheduled-summer/120/120" alt="" data-replaceable></div>
+              <div class="list-item-body">
+                <div class="list-item-title">夏季限定セミナー「OEM 工場の選び方」（公開予約）</div>
+                <div class="list-item-meta">
+                  <span class="list-item-status scheduled"></span>
+                  <span>予約 06.01</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-thumb"><img src="https://picsum.photos/seed/news-insight-china-cosmetic/120/120" alt="" data-replaceable></div>
+              <div class="list-item-body">
+                <div class="list-item-title">中国化粧品市場 2026 Q1 動向レポート公開</div>
+                <div class="list-item-meta">
+                  <span class="list-item-status published"></span>
+                  <span>公開中</span><span>·</span><span>2026.04.20</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-thumb"><img src="https://picsum.photos/seed/news-shanghai-office/120/120" alt="" data-replaceable></div>
+              <div class="list-item-body">
+                <div class="list-item-title">上海事務所 移転のご案内</div>
+                <div class="list-item-meta">
+                  <span class="list-item-status published"></span>
+                  <span>公開中</span><span>·</span><span>2026.04.15</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ===== Column 2: Editor ===== -->
+        <main class="col">
+          <div class="editor-head">
+            <div class="editor-head-left">
+              <span class="tag green">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="margin-right:4px;"><circle cx="12" cy="12" r="6"/></svg>
+                公開中
+              </span>
+              <div class="lang-tabs">
+                <button class="lang-tab active">JP<span class="check">✓</span></button>
+                <button class="lang-tab">CN<span class="check">✓</span></button>
+                <button class="lang-tab">EN</button>
+              </div>
+            </div>
+            <div class="editor-head-right">
+              <span class="save-status">最終保存 2 分前</span>
+              <button class="btn btn-default">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                プレビュー
+              </button>
+              <button class="btn btn-ghost">下書き保存</button>
+              <button class="btn btn-success">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                公開更新
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-body">
+            <!-- Title -->
+            <div class="field-title">
+              <input type="text" value="商務日本語研修プログラムを正式リリース。第一期 5月15日開講">
+            </div>
+
+            <!-- Slug -->
+            <div class="field-slug">
+              <span class="domain">gycompany.co.jp/news/</span>
+              <input type="text" value="business-japanese-launch-2026-05">
+              <span class="auto">自動生成</span>
+            </div>
+
+            <!-- Featured image -->
+            <div class="field-image">
+              <div class="field-label">
+                <span>アイキャッチ画像</span>
+                <span class="hint">推奨 1600 × 900px / 最大 5MB</span>
+              </div>
+              <div class="upload-area has-image">
+                <img src="https://picsum.photos/seed/news-feat-launch/1600/900" alt="" data-replaceable>
+                <div class="overlay">
+                  <button class="btn btn-default" type="button">変更</button>
+                  <button class="btn btn-ghost" type="button" style="background:rgba(255,255,255,.1); color:#fff; border-color:rgba(255,255,255,.4);">削除</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Excerpt -->
+            <div class="field-input">
+              <div class="field-label">
+                <span>概要・抜粋</span>
+                <span class="hint">120 文字以内推奨 / 一覧と SNS で表示</span>
+              </div>
+              <textarea>20年の現場経験を結晶化した、跨境ビジネス特化型の商務日本語研修。3 階層 × 4 業界専門の体系的カリキュラムで、JLPT のためではなく "商談で勝つ" 日本語を 3 ヶ月で身につけます。本日より受講申込を受付開始しました。</textarea>
+            </div>
+
+            <!-- Rich text body -->
+            <div>
+              <div class="field-label">
+                <span>本文</span>
+                <span class="hint">Markdown / リッチテキスト / 画像挿入対応</span>
+              </div>
+              <div class="rt-editor">
+                <div class="rt-toolbar">
+                  <select class="rt-select">
+                    <option>段落</option>
+                    <option>見出し H2</option>
+                    <option>見出し H3</option>
+                    <option>引用</option>
+                  </select>
+                  <span class="rt-divider"></span>
+                  <button class="rt-btn" title="太字"><strong>B</strong></button>
+                  <button class="rt-btn" title="斜体"><em>I</em></button>
+                  <button class="rt-btn" title="下線" style="text-decoration:underline;">U</button>
+                  <button class="rt-btn" title="取消"><s>S</s></button>
+                  <span class="rt-divider"></span>
+                  <button class="rt-btn" title="リンク"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></button>
+                  <button class="rt-btn" title="箇条書き"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+                  <button class="rt-btn" title="番号付き"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4M4 10h2M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+                  <button class="rt-btn" title="引用"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg></button>
+                  <span class="rt-divider"></span>
+                  <button class="rt-btn" title="画像"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button>
+                  <button class="rt-btn" title="動画"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+                  <button class="rt-btn" title="コード"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></button>
+                  <button class="rt-btn" title="テーブル"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></button>
+                  <span class="rt-divider"></span>
+                  <button class="rt-btn" title="左揃え"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button>
+                  <button class="rt-btn" title="中央揃え"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg></button>
+                  <span class="rt-divider"></span>
+                  <button class="rt-btn" title="元に戻す"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>
+                </div>
+                <div class="rt-content" contenteditable="true">
+                  <h2>はじめに</h2>
+                  <p>2026年5月7日、株式会社ジーワイカンパニーは、新たな事業として<strong>商務日本語研修プログラム</strong>を正式にリリースいたしました。20年にわたり日中跨境ビジネスの最前線で蓄積してきた知見を、体系的なカリキュラムへと結晶化した、当社にとって 6 つ目の事業領域となります。</p>
+
+                  <h2>このプログラムが解決する課題</h2>
+                  <p>多くの中国系ビジネスパーソンが日本市場で直面しているのは、<em>「日本語が通じない」問題ではなく、「失礼にならない日本語が話せない」問題</em>です。私たちは現場で何度もこの場面に遭遇してきました。</p>
+                  <ul>
+                    <li>商談で相手の表情が固まる瞬間</li>
+                    <li>メール一通で取引が止まる瞬間</li>
+                    <li>接待の席で空気が変わる瞬間</li>
+                  </ul>
+                  <p>これらは <code>JLPT N1</code> を持っていても解決できない、文化と作法の問題です。</p>
+
+                  <blockquote>「日本語が話せる」ことと「日本人の信頼を得る日本語が話せる」ことは、別のスキルです。私たちが教えるのは後者です。</blockquote>
+
+                  <h3>カリキュラムの 3 つの特長</h3>
+                  <p>このプログラムでは...</p>
+                </div>
+                <div class="rt-foot">
+                  <span>2,847 文字 · 読了約 7 分</span>
+                  <span>自動保存 ✓</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div>
+              <div class="field-label">
+                <span>タグ</span>
+                <span class="hint">関連記事の検索性向上に</span>
+              </div>
+              <div class="tag-input">
+                <span class="tag-pill">商務日本語<span class="x">×</span></span>
+                <span class="tag-pill">研修<span class="x">×</span></span>
+                <span class="tag-pill">新規事業<span class="x">×</span></span>
+                <span class="tag-pill">2026<span class="x">×</span></span>
+                <input type="text" placeholder="タグを追加...">
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <!-- ===== Column 3: Settings ===== -->
+        <aside class="col">
+
+          <div class="panel">
+            <div class="panel-head">
+              <h4>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                公開設定
+              </h4>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <span class="k">ステータス</span>
+                <span class="v"><span class="tag green">公開中</span></span>
+              </div>
+              <div class="row">
+                <span class="k">公開日時</span>
+                <span class="v">2026.05.07 10:00</span>
+              </div>
+              <div class="row">
+                <span class="k">最終更新</span>
+                <span class="v">2026.05.07 14:32</span>
+              </div>
+              <div class="row">
+                <span class="k">作成者</span>
+                <span class="v">郭　英</span>
+              </div>
+              <hr style="border:none; border-top:1px solid var(--border); margin: 4px 0;">
+              <div class="row">
+                <span class="k">トップページに掲載</span>
+                <span class="toggle on" data-toggle></span>
+              </div>
+              <div class="row">
+                <span class="k">ピン留め（Featured）</span>
+                <span class="toggle on" data-toggle></span>
+              </div>
+              <div class="row">
+                <span class="k">コメント受付</span>
+                <span class="toggle" data-toggle></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h4>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                カテゴリー
+              </h4>
+            </div>
+            <div class="panel-body">
+              <select class="s-select">
+                <option>お知らせ</option>
+                <option>プレスリリース</option>
+                <option>イベント</option>
+                <option>インサイト</option>
+                <option>メディア掲載</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h4>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                SEO 設定
+              </h4>
+              <span class="tag green" style="font-size: 10px;">SCORE 88</span>
+            </div>
+            <div class="panel-body">
+              <div class="seo-preview">
+                <div class="url">gycompany.co.jp › news › business-japanese-launch...</div>
+                <div class="title">商務日本語研修プログラムを正式リリース | GY COMPANY</div>
+                <div class="desc">20年の現場経験を結晶化した、跨境ビジネス特化型の商務日本語研修プログラム。第一期 5月15日 開講、本日より受講申込開始。</div>
+              </div>
+              <div class="seo-meter">
+                <span class="good"></span>
+                <span class="good"></span>
+                <span class="good"></span>
+                <span class="good"></span>
+                <span class="ok"></span>
+              </div>
+              <div class="row">
+                <span class="k">メタ Title 文字数</span>
+                <span class="v" style="color:var(--success); font-size:12px;">42 / 60 ✓</span>
+              </div>
+              <div class="row">
+                <span class="k">メタ Description</span>
+                <span class="v" style="color:var(--success); font-size:12px;">74 / 160 ✓</span>
+              </div>
+              <div class="row">
+                <span class="k">フォーカスキーワード</span>
+                <span class="v" style="font-size:12px;">商務日本語</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h4>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                関連記事
+              </h4>
+              <button class="btn btn-ghost btn-icon" aria-label="追加" style="height:24px; width:24px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+            </div>
+            <div class="panel-body">
+              <div class="related-list">
+                <div class="related-item">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+                  <span class="name">中国化粧品市場 2026 Q1 動向レポート</span>
+                  <span class="x">×</span>
+                </div>
+                <div class="related-item">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+                  <span class="name">2026年 中日越境ビジネス展望</span>
+                  <span class="x">×</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h4>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12.5C2 9.46 4.46 7 7.5 7H18a4 4 0 01.04 8H7.5C5.5 15 4 13.5 4 11.5"/></svg>
+                バージョン履歴
+              </h4>
+              <a href="#" style="font-size:11px; color: var(--blue-6); font-weight:600;">全て →</a>
+            </div>
+            <div class="panel-body" style="padding: 8px 14px;">
+              <div class="row" style="padding: 6px 0;">
+                <span class="k">v3 · 14:32</span>
+                <span class="v" style="font-size:11px; color: var(--success);">●  現在</span>
+              </div>
+              <div class="row" style="padding: 6px 0;">
+                <span class="k">v2 · 13:18</span>
+                <span class="v" style="font-size:11px; color: var(--text-muted);">郭　英</span>
+              </div>
+              <div class="row" style="padding: 6px 0;">
+                <span class="k">v1 · 10:00</span>
+                <span class="v" style="font-size:11px; color: var(--text-muted);">公開</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 0 var(--s-3) var(--s-4);">
+            <button class="btn btn-default" style="width:100%; color: var(--accent); border-color: rgba(199,62,58,0.3);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              この記事を削除
+            </button>
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // sidebar collapse
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    });
+
+    // list item active
+    document.querySelectorAll('.list-item').forEach(li => {
+      li.addEventListener('click', () => {
+        document.querySelectorAll('.list-item').forEach(i => i.classList.remove('active'));
+        li.classList.add('active');
+      });
+    });
+
+    // list tabs
+    document.querySelectorAll('.list-tab').forEach(t => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.list-tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+      });
+    });
+
+    // language tabs
+    document.querySelectorAll('.lang-tab').forEach(t => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.lang-tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+      });
+    });
+
+    // toggle switches
+    document.querySelectorAll('[data-toggle]').forEach(t => {
+      t.addEventListener('click', () => t.classList.toggle('on'));
+    });
+
+    // rich text buttons (visual only)
+    document.querySelectorAll('.rt-btn').forEach(b => {
+      b.addEventListener('click', () => b.classList.toggle('active'));
+    });
+
+    // tag pill remove
+    document.querySelectorAll('.tag-pill .x').forEach(x => {
+      x.addEventListener('click', e => { e.stopPropagation(); x.parentElement.remove(); });
+    });
+  </script>
+</body>
+</html>
