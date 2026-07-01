@@ -15,7 +15,14 @@
     document.querySelectorAll("[data-i18n]").forEach((element) => {
       const value = dict[element.dataset.i18n];
       if (value === undefined) return;
-      if (element.dataset.i18nHtml === "true") element.innerHTML = value.replace(/\n/g, "<br>");
+      if (element.dataset.i18nHtml === "true") {
+        const lines = value.split("\n");
+        if (element.classList.contains("page-hero-title") && lines.length > 1) {
+          element.innerHTML = `${lines[0]}<span class="page-hero-subtitle">${lines.slice(1).join("<br>")}</span>`;
+        } else {
+          element.innerHTML = value.replace(/\n/g, "<br>");
+        }
+      }
       else element.textContent = value;
     });
     document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
