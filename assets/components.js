@@ -4,9 +4,9 @@
   const contactHref = page === "home" || page === "about" ? "#contact" : "about.html#contact";
   const navItems = [
     ["home", "homepage.html", "navHome", "トップページ"],
-    ["business", "business.html", "navBusiness", "中日ビジネス"],
-    ["culture", "culture.html", "navCulture", "中日文化交流"],
-    ["education", "japanese.html", "navEducation", "日本語教育・講師募集"],
+    ["business", "business.html", "navBusiness", "日中ビジネスコンサルティング"],
+    ["culture", "culture.html", "navCulture", "日中文化交流"],
+    ["education", "japanese.html", "navEducation", "日本語教育プラットフォーム・講師募集"],
     ["cases", "cases.html", "navCases", "事例紹介"],
     ["about", "about.html", "navAbout", "会社概要・お問い合わせ"]
   ];
@@ -18,7 +18,7 @@
     ).join("");
     headerTarget.innerHTML = `
       <div class="topbar"><div class="container topbar-inner">
-        <span data-i18n="topAddress">東京都港区三田3-9-11 ランドル高輪ゲートウェイ5F</span><span>TEL 03-6823-3858</span>
+        <span data-i18n="topAddress">東京都港区三田3-9-11 ランドル高輪ゲートウェイ5F</span>
       </div></div>
       <header class="nav"><div class="container nav-inner">
         <a class="nav-logo" href="homepage.html" aria-label="GY COMPANY"><img src="assets/gy_company_logo.png" alt="GY COMPANY"></a>
@@ -36,9 +36,9 @@
     footerTarget.innerHTML = `
       <footer class="footer"><div class="container">
         <div class="footer-grid">
-          <div><h3>GY COMPANY</h3><p data-i18n="footerTag">日本に根ざし、中国を理解する。中日間のビジネス・文化・教育をつなぐ実行型パートナー。</p></div>
+          <div><h3>GY COMPANY</h3><p data-i18n="footerTag">日本に根ざし、中国を深く知る。日中のビジネス・文化・教育をつなぐ「伴走型」パートナー。</p></div>
           <div><h4 data-i18n="footerBusiness">事業</h4><ul>
-            <li><a href="business.html" data-i18n="navBusiness">中日ビジネス</a></li><li><a href="culture.html" data-i18n="navCulture">中日文化交流</a></li><li><a href="japanese.html" data-i18n="navEducation">日本語教育・講師募集</a></li>
+            <li><a href="business.html" data-i18n="navBusiness">日中ビジネスコンサルティング</a></li><li><a href="culture.html" data-i18n="navCulture">日中文化交流</a></li><li><a href="japanese.html" data-i18n="navEducation">日本語教育プラットフォーム・講師募集</a></li>
           </ul></div>
           <div><h4 data-i18n="footerCompany">会社情報</h4><ul>
             <li><a href="cases.html" data-i18n="navCases">事例紹介</a></li><li><a href="about.html" data-i18n="navAbout">会社概要・お問い合わせ</a></li><li><a href="mailto:info@gycompany.co.jp">info@gycompany.co.jp</a></li>
