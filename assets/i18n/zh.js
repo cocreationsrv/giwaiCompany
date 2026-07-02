@@ -34,13 +34,13 @@ window.GY_I18N.zh = {
   },
   education: {
     pageTitle:"日语教育平台・讲师招聘 | GY COMPANY", pageDescription:"面向在日外国人与中文母语学习者的实用日语教育，同时招聘日语讲师。",
-    heroEyebrow:"JAPANESE EDUCATION & RECRUITMENT", heroTitle:"为在日本生活、工作和学习的人，\n提供实用日语教育。",
+    heroEyebrow:"04 / EDUCATIONRECRUIT", heroSectionTitle:"日语教育平台・讲师招聘", heroTitle:"为在日本生活、工作和学习的人，\n提供实用日语教育。",
     overviewEyebrow:"OVERVIEW", overviewTitle:"概要", overviewText:"作为今后的重点事业，GY COMPANY 计划面向在日外国人及中文母语日语学习者推出日语教育平台。我们希望通过生活日语、商务日语、JLPT备考、1对1课程及在线学习等方式，支持他们在日本生活、工作和学习。", overviewText2:"我们重视的不只是语言知识，更是培养学习者在日本社会安心沟通的能力。",
     coursesEyebrow:"COURSES", coursesTitle:"日语学习服务", course1:"生活日语课程", course1Text:"生活场景中可用的实用会话、办理手续、社区沟通。", course2:"商务日语课程", course2Text:"职场会话、敬语、邮件、面试、汇报与商谈等。", course3:"JLPT考试对策课程", course3Text:"面向以N5～N1为目标的学习者，提供考试对策与学习管理。", course4:"1对1日语课程", course4Text:"根据学习者的目标、水平与生活节奏进行一对一指导。", course5:"在线学习系统", course5Text:"作为连接讲师与学习者的教育平台，逐步开发与运营。",
     recruitEyebrow:"TEACHER RECRUITMENT", recruitTitle:"日语讲师招聘", recruitLead:"GY COMPANY 正为日语教育平台的新事业拓展招聘日语讲师。我们由衷欢迎能够与我们一起打造实用且有温度的日语教育服务的您前来应聘，帮助在日外国人及中文母语日语学习者在日本更安心地生活、工作、学习与交流。", rolesTitle:"招聘岗位", role1:"日语讲师", role2:"在线课程讲师", role3:"线下课程讲师", role4:"商务日语讲师", role5:"JLPT对策讲师",
     conditionsTitle:"应聘条件", conditions1:"持有日语教师资格或具备日语教学经验者优先", conditions2:"能够胜任在线授课者优先", conditions3:"具有中文母语学习者指导经验者优先",
     workTitle:"工作形式与报酬", workText:"工作形式为正式员工・兼职等，将根据负责内容与授课形式协商决定。以在线授课为主，也可能安排部分线下授课。工作日期・时间及报酬将根据经验、负责内容与授课形式协商决定。",
-    applyTitle:"应聘方式", applyText:"希望应聘日语讲师的您，请在附上履历书的同时，将以下内容写明在邮件正文中与我们联系。", applySubjectLabel:"邮件主题", applySubject:"日语讲师应聘（您的姓名）", applyFieldsLabel:"填写事项", applyFields:"姓名、联系方式、持有资格、日语教育经验、可授课的星期与时间段、能否在线授课、自我介绍与应聘动机", applyEmailLabel:"应聘邮箱", applyNote:"确认应聘内容后，负责人将与您联系。", applyCta:"应聘日语讲师"
+    applyTitle:"应聘方式", applyText:"希望应聘日语讲师的您，请在附上履历书的同时，将以下内容写明在邮件正文中与我们联系。", applySubjectLabel:"邮件主题", applySubject:"日语讲师应聘（您的姓名）", applyFieldsLabel:"填写事项", applyFields:"姓名、联系方式、持有资格、日语教育经验、可授课的星期与时间段、能否在线授课、自我介绍与应聘动机", applyEmailLabel:"应聘地址", applyEmailPrefix:"E-mail", applyNote:"确认应聘内容后，负责人将与您联系。", applyCta:"应聘日语讲师"
   },
   cases: {
     pageTitle:"案例介绍 | GY COMPANY", pageDescription:"介绍GY COMPANY在中日商务、文化交流、贸易与日语教育方面的案例。",
