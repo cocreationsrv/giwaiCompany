@@ -37,6 +37,7 @@
       button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
     });
     try { localStorage.setItem("gy-lang", lang); } catch (_) {}
+    document.dispatchEvent(new CustomEvent("gy:langchange", { detail: { lang } }));
   }
 
   function applyContactTopicFromUrl() {

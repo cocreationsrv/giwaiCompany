@@ -13,7 +13,7 @@
   const contactTopic = topicByPage[page] || "other";
   const contactHref = page === "about" ? "#contact" : `about.html?topic=${contactTopic}#contact`;
   const navItems = [
-    ["home", "homepage.html", "navHome", "トップページ"],
+    ["home", "index.html", "navHome", "トップページ"],
     ["business", "business.html", "navBusiness", "日中ビジネスコンサルティング"],
     ["culture", "culture.html", "navCulture", "日中文化交流"],
     ["education", "japanese.html", "navEducation", "日本語教育プラットフォーム・講師募集"],
@@ -31,7 +31,7 @@
         <span data-i18n="topAddress">東京都港区三田3-9-11 ランドル高輪ゲートウェイ5F</span>
       </div></div>
       <header class="nav"><div class="container nav-inner">
-        <a class="nav-logo" href="homepage.html" aria-label="GY COMPANY"><img src="assets/gy_company_logo.png" alt="GY COMPANY"></a>
+        <a class="nav-logo" href="index.html" aria-label="GY COMPANY"><img src="assets/gy_company_logo.png" alt="GY COMPANY"></a>
         <nav class="nav-menu" aria-label="Primary">${links}</nav>
         <div class="nav-actions">
           <div class="lang-switch" aria-label="Language"><button data-lang="ja">JA</button><button data-lang="zh">中文</button><button data-lang="en">EN</button></div>

@@ -217,11 +217,26 @@ body[data-page="education"] .card p, body[data-page="education"] .card .check-li
 .contact-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.15); }
 .contact-list b { display: inline-block; width: 90px; color: #e6cf9e; }
 .contact-form { padding: 30px; background: #fff; color: var(--c-text); }
+.contact-panel { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-height: 260px; padding: 34px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); }
+.contact-panel p { max-width: 560px; color: rgba(255,255,255,.82); font-size: 17px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .field { margin-bottom: 16px; }
 .field label { display: block; margin-bottom: 5px; color: var(--c-primary); font-size: 13px; font-weight: 700; }
 .field input, .field select, .field textarea { width: 100%; padding: 12px; border: 1px solid var(--c-border); background: #fff; }
 .field textarea { min-height: 120px; resize: vertical; }
+
+.news-grid { align-items: stretch; }
+.news-card { height: 100%; transition: transform .22s ease, box-shadow .22s ease; }
+.news-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.news-card a { display: flex; flex-direction: column; height: 100%; }
+.news-card h3 { margin-bottom: 12px; }
+.news-card p { margin-bottom: 0; }
+.news-empty { grid-column: 1 / -1; margin: 0; color: var(--c-muted); }
+.news-more { margin-top: 34px; }
+.news-detail .tag { margin-bottom: 18px; }
+.news-body { margin-top: 34px; color: var(--c-text); font-size: 16px; line-height: 2; }
+.news-body p { margin-bottom: 20px; }
+.news-back { margin-top: 40px; }
 
 .footer { padding: 58px 0 24px; background: #172941; color: rgba(255,255,255,.72); }
 .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 50px; }

@@ -10,7 +10,7 @@ window.GY_I18N.zh = {
     heroEyebrow:"JAPAN × CHINA · BUSINESS · CULTURE · EDUCATION", heroTitle:"扎根日本，深入了解中国。", heroTagline:"连接日中商务、文化与教育的「伴随型」合作伙伴。", heroText1:"GY COMPANY 凭借日本法人的可靠性，以及对中国市场与中国文化的深刻理解，开展日中商务咨询、文化交流与日语教育事业。", heroText2:"跨越语言、文化与商业习惯的差异，从策划到执行，为客户提供细致周到的实务支持。", heroCta1:"立即咨询", heroCta2:"查看案例", heroCta3:"日语讲师招聘",
     businessEyebrow:"THREE CORE BUSINESSES", businessTitle:"三大业务领域", b1Title:"日中商务咨询", b1Text:"从实务层面支持日中双方的市场进入与业务拓展。", b1Services:"市场进入支持／商务洽谈・合作支持／笔译・口译／商品推广／在日本创业・市场进入支持", b2Title:"日中文化交流", b2Text:"策划并运营促进相互理解与信赖关系的交流项目。", b2Services:"文化交流活动／青少年交流／研修・考察／文化交流沙龙／现场运营", b3Title:"日语教育平台", b3Text:"逐步面向在日外国人与中文母语学习者开展实用日语教育。", b3Services:"生活日语／商务日语／JLPT对策／1对1课程／日语讲师招聘", learnMore:"了解详情",
     strengthEyebrow:"OUR STRENGTHS", strengthTitle:"我们的优势", s1:"扎根日本的法人所具备的高度可靠性", s2:"拥有中国背景的代表对中日双方的深刻理解力", s3:"不止于语言，更能连接文化、价值观与商业习惯的灵活协调能力", s4:"从策划到执行一气呵成、全程陪伴的扎实实务能力", s5:"始终将与客户的长期信赖关系放在首位的态度",
-    caseEyebrow:"FEATURED CASE", caseTitle:"连接约800名青少年的大型日中交流", caseText:"2019年，本公司牵线大田区役所国际科及大田区教育委员会与中国相关机构，为来自中国各地约800名小学生与大田区内小学举办了大型文化交流活动。我们统筹协调合作邀约、相关方协调、当日现场运营、口译与流程安排，以及紧急情况应对，为活动的顺利举行做出了贡献。", consultCta:"日中相关咨询请点这里"
+    caseEyebrow:"FEATURED CASE", caseTitle:"连接约800名青少年的大型日中交流", caseText:"2019年，本公司牵线大田区役所国际科及大田区教育委员会与中国相关机构，为来自中国各地约800名小学生与大田区内小学举办了大型文化交流活动。我们统筹协调合作邀约、相关方协调、当日现场运营、口译与流程安排，以及紧急情况应对，为活动的顺利举行做出了贡献。", consultCta:"日中相关咨询请点这里", newsEyebrow:"NEWS", newsTitle:"新闻动态", newsLoading:"正在读取新闻动态。", newsMore:"查看全部", homeContactPanelText:"请根据您的咨询内容，通过公司概要页面的咨询表单与我们联系。", homeContactPanelCta:"前往咨询表单"
   },
   business: {
     pageTitle:"中日商务咨询 | GY COMPANY", pageDescription:"为日本企业开拓中国、中国企业进入日本，以及中日商务洽谈、合作和商品拓展提供实务支持。",
@@ -58,7 +58,7 @@ window.GY_I18N.zh = {
     philosophyEyebrow:"PHILOSOPHY", philosophyTitle:"经营理念", philosophyText:"通过灵活多样的服务为社会作出贡献，作为中日桥梁，以全球视角创造新的价值。", value1:"诚信", value1Text:"珍视信赖关系", value2:"多样性", value2Text:"尊重不同文化背景", value3:"可持续性", value3Text:"追求长期价值创造",
     messageEyebrow:"MESSAGE", messageTitle:"代表致辞", messageQuote:"不止于语言，更希望成为跨越文化、价值观\n与商业习惯差异的连接者。", messageP1:"感谢您访问株式会社ジーワイカンパニー的官方网站。我出生于中国，大学毕业后曾在中国的日资企业工作，接触到日本企业诚信的工作方式与对品质的坚持。之后，我于1999年来到日本，通过留学、就业、创业以及日常生活，深入学习了日本社会与日本文化。", messageP2:"在日本长期生活的过程中，我切身体会到礼仪、信赖关系、遵守约定的态度、体谅他人的心意以及细致关怀的重要性。另一方面，作为在中国成长的人，我也理解中国的行动力、速度感以及重视人与人连接的文化。", messageP3:"正因如此，我们希望不止于语言，更能跨越文化、价值观与商业习惯的差异，成为连接人、企业、地区与学习的存在。我们将通过商务咨询、文化交流与日语教育，培育中日之间新的信赖与可能性。", signature:"村上 英", messageOrg:"株式会社ジーワイカンパニー　代表董事", inquiryTitle:"联系我们", inquiryCta:"点击这里联系我们"
   },
-  news: { pageTitle:"新闻动态 | GY COMPANY", pageDescription:"GY COMPANY最新动态。", heroEyebrow:"NEWS", heroTitle:"新闻动态", heroLead:"发布商务、文化交流及日语教育相关最新信息。", title:"最新信息", item1:"日语教育平台筹备通知", item2:"文化交流沙龙举办计划", item3:"中日商务咨询持续受理中" },
+  news: { pageTitle:"新闻动态 | GY COMPANY", pageDescription:"GY COMPANY最新动态。", heroEyebrow:"NEWS", heroTitle:"新闻动态", heroLead:"发布商务、文化交流及日语教育相关最新信息。", title:"最新信息", item1:"日语教育平台筹备通知", item2:"文化交流沙龙举办计划", item3:"中日商务咨询持续受理中", newsLoading:"正在读取新闻动态。", newsEmpty:"目前没有已发布的新闻动态。", newsError:"新闻动态读取失败。", newsNotFound:"未找到该新闻动态。", newsBack:"返回列表" },
   thanks: { pageTitle:"提交完成 | GY COMPANY", pageDescription:"我们已收到您的咨询。", heroEyebrow:"THANK YOU", heroTitle:"提交已完成", heroLead:"感谢您的咨询。我们会确认内容，并由负责人尽快与您联系。", homeCta:"返回首页", contactCta:"返回咨询表单" },
   process: { pageTitle:"咨询流程 | GY COMPANY", pageDescription:"从咨询到执行支持和持续建议的流程。", heroEyebrow:"PROJECT FLOW", heroTitle:"咨询流程", heroLead:"认真梳理课题，形成可执行计划。", title:"七个步骤", step1:"提交咨询", step2:"首次访谈", step3:"梳理课题与方向建议", step4:"支持方案与报价", step5:"签约及项目启动", step6:"执行支持与进度管理", step7:"成果确认与持续建议" }
 };
