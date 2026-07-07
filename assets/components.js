@@ -1,7 +1,17 @@
 (() => {
   const page = document.body.dataset.page || "";
   const activePage = page === "education" ? "education" : page;
-  const contactHref = page === "home" || page === "about" ? "#contact" : "about.html#contact";
+  const topicByPage = {
+    business: "business",
+    culture: "culture",
+    education: "education",
+    cases: "other",
+    news: "other",
+    process: "other",
+    home: "other"
+  };
+  const contactTopic = topicByPage[page] || "other";
+  const contactHref = page === "about" ? "#contact" : `about.html?topic=${contactTopic}#contact`;
   const navItems = [
     ["home", "homepage.html", "navHome", "トップページ"],
     ["business", "business.html", "navBusiness", "日中ビジネスコンサルティング"],
@@ -41,7 +51,7 @@
             <li><a href="business.html" data-i18n="navBusiness">日中ビジネスコンサルティング</a></li><li><a href="culture.html" data-i18n="navCulture">日中文化交流</a></li><li><a href="japanese.html" data-i18n="navEducation">日本語教育プラットフォーム・講師募集</a></li>
           </ul></div>
           <div><h4 data-i18n="footerCompany">会社情報</h4><ul>
-            <li><a href="cases.html" data-i18n="navCases">事例紹介</a></li><li><a href="about.html" data-i18n="navAbout">会社概要・お問い合わせ</a></li><li><a href="mailto:info@gycompany.co.jp">info@gycompany.co.jp</a></li>
+            <li><a href="cases.html" data-i18n="navCases">事例紹介</a></li><li><a href="about.html" data-i18n="navAbout">会社概要・お問い合わせ</a></li><li><a href="${contactHref}" data-i18n="footerContact">お問い合わせ</a></li>
           </ul></div>
         </div>
         <div class="footer-bottom"><span data-i18n="copyright">© 2026 株式会社ジーワイカンパニー All rights reserved.</span><span></span></div>

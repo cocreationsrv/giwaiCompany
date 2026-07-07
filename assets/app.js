@@ -39,10 +39,25 @@
     try { localStorage.setItem("gy-lang", lang); } catch (_) {}
   }
 
+  function applyContactTopicFromUrl() {
+    const select = document.querySelector(".contact-form select[name='topic']");
+    if (!select) return;
+    const topicValues = {
+      business: "Japan-China Business",
+      culture: "Cultural Exchange",
+      education: "Japanese Education / Teaching Application",
+      other: "Other"
+    };
+    const topic = new URLSearchParams(window.location.search).get("topic");
+    const value = topicValues[topic];
+    if (value) select.value = value;
+  }
+
   function boot() {
     let stored = null;
     try { stored = localStorage.getItem("gy-lang"); } catch (_) {}
     applyLang(stored || document.body.dataset.lang || "ja");
+    applyContactTopicFromUrl();
     document.querySelectorAll(".lang-switch button, [data-set-lang]").forEach((control) => {
       control.addEventListener("click", (event) => {
         event.preventDefault();
@@ -62,12 +77,6 @@
         });
       }, { threshold: .08 });
       observer.observe(element);
-    });
-    document.querySelectorAll(".contact-form").forEach((form) => {
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        alert(dictionary(document.body.dataset.lang).formThanks);
-      });
     });
   }
 

@@ -41,7 +41,7 @@ window.GY_I18N.zh = {
     recruitEyebrow:"TEACHER RECRUITMENT", recruitTitle:"日语讲师招聘", recruitLead:"GY COMPANY 正为日语教育平台的新事业拓展招聘日语讲师。我们由衷欢迎能够与我们一起打造实用且有温度的日语教育服务的您前来应聘，帮助在日外国人及中文母语日语学习者在日本更安心地生活、工作、学习与交流。", rolesTitle:"招聘岗位", role1:"日语讲师", role2:"在线课程讲师", role3:"线下课程讲师", role4:"商务日语讲师", role5:"JLPT对策讲师",
     conditionsTitle:"应聘条件", conditions1:"持有日语教师资格或具备日语教学经验者优先", conditions2:"能够胜任在线授课者优先", conditions3:"具有中文母语学习者指导经验者优先",
     workTitle:"工作形式与报酬", workText:"工作形式为正式员工・兼职等，将根据负责内容与授课形式协商决定。以在线授课为主，也可能安排部分线下授课。工作日期・时间及报酬将根据经验、负责内容与授课形式协商决定。",
-    applyTitle:"应聘方式", applyText:"希望应聘日语讲师的您，请在附上履历书的同时，将以下内容写明在邮件正文中与我们联系。", applySubjectLabel:"邮件主题", applySubject:"日语讲师应聘（您的姓名）", applyFieldsLabel:"填写事项", applyFields:"姓名、联系方式、持有资格、日语教育经验、可授课的星期与时间段、能否在线授课、自我介绍与应聘动机", applyEmailLabel:"应聘地址", applyEmailPrefix:"E-mail", applyNote:"确认应聘内容后，负责人将与您联系。", applyCta:"应聘日语讲师"
+    applyTitle:"应聘方式", applyText:"希望应聘日语讲师的您，请通过咨询表单联系，并在留言栏填写以下内容。", applySubjectLabel:"主题", applySubject:"日语讲师应聘（您的姓名）", applyFieldsLabel:"填写事项", applyFields:"姓名、联系方式、持有资格、日语教育经验、可授课的星期与时间段、能否在线授课、自我介绍与应聘动机", applyEmailLabel:"应聘入口", applyEmailPrefix:"表单", applyNote:"确认应聘内容后，负责人将与您联系。", applyCta:"应聘日语讲师"
   },
   cases: {
     pageTitle:"案例介绍 | GY COMPANY", pageDescription:"介绍GY COMPANY在中日商务、文化交流、贸易与日语教育方面的案例。",

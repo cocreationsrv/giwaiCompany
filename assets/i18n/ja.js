@@ -41,7 +41,7 @@ window.GY_I18N.ja = {
     recruitEyebrow:"TEACHER RECRUITMENT", recruitTitle:"日本語講師募集", recruitLead:"株式会社ジーワイカンパニーでは、日本語教育プラットフォームの新規展開に向けて、日本語講師を募集しています。在日外国人や中国語圏の日本語学習者が、日本でより安心して生活し、働き、学び、交流できるよう、実用的で温かみのある日本語教育サービスを共に創り上げてくださる方のご応募を心よりお待ちしております。", rolesTitle:"募集職種", role1:"日本語講師", role2:"オンラインレッスン講師", role3:"対面レッスン講師", role4:"ビジネス日本語講師", role5:"JLPT対策講師",
     conditionsTitle:"応募条件", conditions1:"日本語教師資格、または日本語指導経験のある方歓迎", conditions2:"オンライン授業に対応可能な方歓迎", conditions3:"中国語圏学習者への指導経験がある方歓迎",
     workTitle:"勤務形態・報酬", workText:"勤務形態は、正社員・パートタイム等、担当内容や授業形式に応じて相談のうえ決定いたします。オンライン授業を中心に、一部対面授業を行う場合があります。勤務日・時間、報酬は経験・担当内容・授業形式により相談のうえ決定いたします。",
-    applyTitle:"応募方法", applyText:"日本語講師としてのご応募を希望される方は、履歴書を添付のうえ、下記内容をメール本文に明記してご連絡ください。", applySubjectLabel:"メール件名", applySubject:"日本語講師応募（お名前）", applyFieldsLabel:"記載事項", applyFields:"氏名、連絡先、保有資格、日本語教育経験、対応可能な曜日・時間帯、オンライン授業の可否、自己紹介・志望動機", applyEmailLabel:"応募先", applyEmailPrefix:"E-mail", applyNote:"応募内容を確認後、担当者より折り返しご連絡いたします。", applyCta:"日本語講師に応募する"
+    applyTitle:"応募方法", applyText:"日本語講師としてのご応募を希望される方は、お問い合わせフォームより下記内容をメッセージ欄に明記してご連絡ください。", applySubjectLabel:"件名", applySubject:"日本語講師応募（お名前）", applyFieldsLabel:"記載事項", applyFields:"氏名、連絡先、保有資格、日本語教育経験、対応可能な曜日・時間帯、オンライン授業の可否、自己紹介・志望動機", applyEmailLabel:"応募先", applyEmailPrefix:"フォーム", applyNote:"応募内容を確認後、担当者より折り返しご連絡いたします。", applyCta:"日本語講師に応募する"
   },
   cases: {
     pageTitle:"事例紹介 | GY COMPANY", pageDescription:"日中ビジネス、文化交流、貿易、日本語教育におけるジーワイカンパニーの事例を紹介します。",
