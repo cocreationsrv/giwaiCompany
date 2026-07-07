@@ -53,11 +53,18 @@
     if (value) select.value = value;
   }
 
+  function configureFormSuccessPage() {
+    document.querySelectorAll(".contact-form input[name='_next']").forEach((input) => {
+      input.value = new URL("thanks.html", window.location.href).href;
+    });
+  }
+
   function boot() {
     let stored = null;
     try { stored = localStorage.getItem("gy-lang"); } catch (_) {}
     applyLang(stored || document.body.dataset.lang || "ja");
     applyContactTopicFromUrl();
+    configureFormSuccessPage();
     document.querySelectorAll(".lang-switch button, [data-set-lang]").forEach((control) => {
       control.addEventListener("click", (event) => {
         event.preventDefault();
