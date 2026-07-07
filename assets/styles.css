@@ -236,6 +236,19 @@ body[data-page="education"] .card p, body[data-page="education"] .card .check-li
 .news-detail .tag { margin-bottom: 18px; }
 .news-body { margin-top: 34px; color: var(--c-text); font-size: 16px; line-height: 2; }
 .news-body p { margin-bottom: 20px; }
+.news-body h2 { margin: 34px 0 14px; color: var(--c-primary); font-size: 30px; }
+.news-body h3 { margin: 28px 0 10px; color: var(--c-primary); font-size: 23px; }
+.news-body ul, .news-body ol { margin: 0 0 22px; padding-left: 1.6em; }
+.news-body blockquote { margin: 24px 0; padding: 18px 22px; border-left: 3px solid var(--c-gold); background: var(--c-ivory); color: var(--c-primary); }
+.news-body img { max-width: 100%; height: auto; margin: 24px 0; box-shadow: var(--shadow); }
+.news-attachments { margin-top: 42px; padding-top: 26px; border-top: 1px solid var(--c-border); }
+.news-attachments h3 { color: var(--c-primary); font-size: 22px; }
+.news-attachment-list { display: grid; gap: 12px; }
+.news-attachment { display: grid; grid-template-columns: 58px 1fr; gap: 14px; align-items: center; padding: 14px; border: 1px solid var(--c-border); background: #fff; }
+.news-attachment:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.news-attachment-kind { display: grid; place-items: center; width: 58px; height: 44px; background: var(--c-primary-soft); color: var(--c-primary); font-size: 12px; font-weight: 800; }
+.news-attachment b { display: block; color: var(--c-primary); }
+.news-attachment small { color: var(--c-muted); }
 .news-back { margin-top: 40px; }
 
 .footer { padding: 58px 0 24px; background: #172941; color: rgba(255,255,255,.72); }

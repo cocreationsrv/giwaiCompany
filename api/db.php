@@ -65,6 +65,21 @@ function gy_migrate(PDO $pdo): void
             FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE
         )
     ");
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS news_attachments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            news_id INTEGER NOT NULL,
+            kind TEXT NOT NULL DEFAULT 'file' CHECK (kind IN ('image', 'file')),
+            original_name TEXT NOT NULL,
+            stored_name TEXT NOT NULL,
+            file_path TEXT NOT NULL,
+            mime_type TEXT NOT NULL DEFAULT '',
+            file_size INTEGER NOT NULL DEFAULT 0,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE
+        )
+    ");
 }
 
 function gy_admin_exists(PDO $pdo): bool
@@ -106,4 +121,65 @@ function gy_plain_text(?string $value, int $maxLength = 20000): string
         $value = mb_substr($value, 0, $maxLength, 'UTF-8');
     }
     return $value;
+}
+
+function gy_rich_html(?string $value, int $maxLength = 60000): string
+{
+    $value = trim((string) $value);
+    if (mb_strlen($value, 'UTF-8') > $maxLength) {
+        $value = mb_substr($value, 0, $maxLength, 'UTF-8');
+    }
+    $value = strip_tags($value, '<p><br><strong><b><em><i><u><s><ul><ol><li><blockquote><a><h2><h3><img>');
+    $value = preg_replace('/\s+on[a-z]+\s*=\s*(".*?"|\'.*?\'|[^\s>]+)/iu', '', $value) ?? '';
+    $value = preg_replace('/\s+(style|class|id)\s*=\s*(".*?"|\'.*?\'|[^\s>]+)/iu', '', $value) ?? '';
+    $value = preg_replace_callback('/<(a|img)\b([^>]*)>/iu', function (array $match): string {
+        $tag = strtolower($match[1]);
+        $attrs = $match[2];
+        $safe = [];
+        preg_match_all('/\s+(href|src|alt|title|target|rel)\s*=\s*("([^"]*)"|\'([^\']*)\'|([^\s>]+))/iu', $attrs, $found, PREG_SET_ORDER);
+        foreach ($found as $attr) {
+            $name = strtolower($attr[1]);
+            $raw = html_entity_decode($attr[3] !== '' ? $attr[3] : ($attr[4] !== '' ? $attr[4] : $attr[5]), ENT_QUOTES, 'UTF-8');
+            if (($name === 'href' || $name === 'src') && !gy_safe_url($raw)) {
+                continue;
+            }
+            if ($tag === 'img' && !in_array($name, ['src', 'alt', 'title'], true)) {
+                continue;
+            }
+            if ($tag === 'a' && !in_array($name, ['href', 'title', 'target', 'rel'], true)) {
+                continue;
+            }
+            if ($name === 'target') {
+                $raw = '_blank';
+            }
+            if ($name === 'rel') {
+                $raw = 'noopener';
+            }
+            $safe[$name] = htmlspecialchars($raw, ENT_QUOTES, 'UTF-8');
+        }
+        if ($tag === 'a' && isset($safe['href'])) {
+            $safe['rel'] = 'noopener';
+        }
+        if ($tag === 'img' && empty($safe['src'])) {
+            return '';
+        }
+        $attrText = '';
+        foreach ($safe as $name => $raw) {
+            $attrText .= ' ' . $name . '="' . $raw . '"';
+        }
+        return '<' . $tag . $attrText . '>';
+    }, $value) ?? '';
+    return $value;
+}
+
+function gy_safe_url(string $url): bool
+{
+    $url = trim($url);
+    if ($url === '') {
+        return false;
+    }
+    if (str_starts_with($url, 'uploads/')) {
+        return true;
+    }
+    return (bool) preg_match('/^https?:\/\//i', $url);
 }

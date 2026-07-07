@@ -50,6 +50,19 @@ try {
         if (!$item) {
             gy_json(['ok' => false, 'error' => 'Not found'], 404);
         }
+        $attachments = $pdo->prepare('
+            SELECT id, kind, original_name AS name, file_path AS url, mime_type, file_size, created_at
+            FROM news_attachments
+            WHERE news_id = (SELECT id FROM news WHERE slug = :slug LIMIT 1)
+              AND kind = :kind
+            ORDER BY id DESC
+        ');
+        $attachments->execute([':slug' => $slug, ':kind' => 'file']);
+        $item['attachments'] = array_map(function (array $row): array {
+            $row['id'] = (int) $row['id'];
+            $row['file_size'] = (int) $row['file_size'];
+            return $row;
+        }, $attachments->fetchAll());
         gy_json(['ok' => true, 'item' => $item]);
     }
 

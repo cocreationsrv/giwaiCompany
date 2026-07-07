@@ -1,1 +1,3 @@
 .claude/launch.json
+data/site.sqlite
+uploads/news/*

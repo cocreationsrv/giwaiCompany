@@ -7,6 +7,7 @@
   <title>お知らせ管理 | GY COMPANY</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/admin.css">
 </head>
 <body>
@@ -39,6 +40,8 @@
     <section class="admin-editor">
       <form id="newsForm">
         <input type="hidden" name="id">
+        <input id="imageUploadInput" type="file" accept="image/*" hidden>
+        <input id="fileUploadInput" type="file" hidden>
         <div class="admin-editor-head">
           <div>
             <p class="admin-kicker">NEWS EDITOR</p>
@@ -66,24 +69,47 @@
         <div class="admin-lang-panel active" data-lang-panel="ja">
           <label>タイトル<input name="ja_title" required></label>
           <label>概要<textarea name="ja_excerpt" rows="3"></textarea></label>
-          <label>本文<textarea name="ja_body" rows="14"></textarea></label>
+          <input type="hidden" name="ja_body">
+          <div class="admin-editor-field">
+            <div class="admin-field-title">本文</div>
+            <div class="quill-editor" data-rich-content="ja"></div>
+          </div>
         </div>
         <div class="admin-lang-panel" data-lang-panel="zh">
           <label>标题<input name="zh_title"></label>
           <label>概要<textarea name="zh_excerpt" rows="3"></textarea></label>
-          <label>正文<textarea name="zh_body" rows="14"></textarea></label>
+          <input type="hidden" name="zh_body">
+          <div class="admin-editor-field">
+            <div class="admin-field-title">正文</div>
+            <div class="quill-editor" data-rich-content="zh"></div>
+          </div>
         </div>
         <div class="admin-lang-panel" data-lang-panel="en">
           <label>Title<input name="en_title"></label>
           <label>Excerpt<textarea name="en_excerpt" rows="3"></textarea></label>
-          <label>Body<textarea name="en_body" rows="14"></textarea></label>
+          <input type="hidden" name="en_body">
+          <div class="admin-editor-field">
+            <div class="admin-field-title">Body</div>
+            <div class="quill-editor" data-rich-content="en"></div>
+          </div>
         </div>
+
+        <section class="attachment-panel">
+          <div class="attachment-head">
+            <div>
+              <h3>アップロード済みファイル</h3>
+              <p>本文ツールバーから画像・ファイルを追加できます。お知らせを保存してからアップロードしてください。</p>
+            </div>
+          </div>
+          <div class="attachment-list" id="attachmentList"><p class="admin-small">保存後にアップロードできます。</p></div>
+        </section>
 
         <p class="admin-message" id="editorMessage"></p>
       </form>
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
   <script src="assets/admin-news.js"></script>
 </body>
 </html>

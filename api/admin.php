@@ -81,6 +81,7 @@ try {
                         'zh' => ['title' => '', 'excerpt' => '', 'body' => ''],
                         'en' => ['title' => '', 'excerpt' => '', 'body' => ''],
                     ],
+                    'attachments' => [],
                 ];
             }
             if ($row['lang']) {
@@ -89,6 +90,15 @@ try {
                     'excerpt' => $row['excerpt'],
                     'body' => $row['body'],
                 ];
+            }
+        }
+        if ($items) {
+            $ids = array_keys($items);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $stmt = $pdo->prepare("SELECT * FROM news_attachments WHERE news_id IN ($placeholders) ORDER BY id DESC");
+            $stmt->execute($ids);
+            foreach ($stmt->fetchAll() as $attachment) {
+                $items[(int) $attachment['news_id']]['attachments'][] = gy_attachment_payload($attachment);
             }
         }
         gy_json(['ok' => true, 'items' => array_values($items)]);
@@ -141,11 +151,103 @@ try {
                 ':lang' => $lang,
                 ':title' => gy_plain_text($entry['title'] ?? '', 180),
                 ':excerpt' => gy_plain_text($entry['excerpt'] ?? '', 500),
-                ':body' => gy_plain_text($entry['body'] ?? '', 20000),
+                ':body' => gy_rich_html($entry['body'] ?? '', 60000),
             ]);
         }
         $pdo->commit();
         gy_json(['ok' => true, 'id' => $id]);
+    }
+
+    if ($action === 'listAttachments') {
+        gy_require_admin();
+        $newsId = (int) ($_GET['news_id'] ?? 0);
+        if ($newsId <= 0) {
+            gy_json(['ok' => false, 'error' => 'Invalid news id'], 422);
+        }
+        $stmt = $pdo->prepare('SELECT * FROM news_attachments WHERE news_id = :news_id ORDER BY id DESC');
+        $stmt->execute([':news_id' => $newsId]);
+        $items = array_map('gy_attachment_payload', $stmt->fetchAll());
+        gy_json(['ok' => true, 'items' => $items]);
+    }
+
+    if ($action === 'uploadAttachment') {
+        gy_require_admin();
+        $newsId = (int) ($_POST['news_id'] ?? 0);
+        if ($newsId <= 0 || empty($_FILES['file']) || !is_uploaded_file($_FILES['file']['tmp_name'])) {
+            gy_json(['ok' => false, 'error' => 'Select a saved news item and a file'], 422);
+        }
+        $exists = $pdo->prepare('SELECT 1 FROM news WHERE id = :id LIMIT 1');
+        $exists->execute([':id' => $newsId]);
+        if (!$exists->fetchColumn()) {
+            gy_json(['ok' => false, 'error' => 'News item not found'], 404);
+        }
+
+        $file = $_FILES['file'];
+        if ((int) $file['size'] > 10 * 1024 * 1024) {
+            gy_json(['ok' => false, 'error' => 'File size must be 10MB or less'], 422);
+        }
+        $original = gy_plain_text($file['name'] ?? 'file', 180);
+        $extension = strtolower(pathinfo($original, PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv', 'zip'];
+        if (!in_array($extension, $allowed, true)) {
+            gy_json(['ok' => false, 'error' => 'This file type is not allowed'], 422);
+        }
+        $kind = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true) ? 'image' : 'file';
+        $uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'news' . DIRECTORY_SEPARATOR . $newsId;
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
+        $stored = bin2hex(random_bytes(12)) . '.' . $extension;
+        $target = $uploadDir . DIRECTORY_SEPARATOR . $stored;
+        if (!move_uploaded_file($file['tmp_name'], $target)) {
+            gy_json(['ok' => false, 'error' => 'Upload failed'], 500);
+        }
+        $mime = '';
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = $finfo ? (string) finfo_file($finfo, $target) : '';
+            if ($finfo) {
+                finfo_close($finfo);
+            }
+        }
+        $relative = 'uploads/news/' . $newsId . '/' . $stored;
+        $stmt = $pdo->prepare('
+            INSERT INTO news_attachments (news_id, kind, original_name, stored_name, file_path, mime_type, file_size)
+            VALUES (:news_id, :kind, :original_name, :stored_name, :file_path, :mime_type, :file_size)
+        ');
+        $stmt->execute([
+            ':news_id' => $newsId,
+            ':kind' => $kind,
+            ':original_name' => $original,
+            ':stored_name' => $stored,
+            ':file_path' => $relative,
+            ':mime_type' => $mime,
+            ':file_size' => (int) $file['size'],
+        ]);
+        $row = $pdo->prepare('SELECT * FROM news_attachments WHERE id = :id');
+        $row->execute([':id' => (int) $pdo->lastInsertId()]);
+        gy_json(['ok' => true, 'item' => gy_attachment_payload($row->fetch())]);
+    }
+
+    if ($action === 'deleteAttachment') {
+        gy_require_admin();
+        $id = (int) ($input['id'] ?? 0);
+        if ($id <= 0) {
+            gy_json(['ok' => false, 'error' => 'Invalid id'], 422);
+        }
+        $stmt = $pdo->prepare('SELECT * FROM news_attachments WHERE id = :id LIMIT 1');
+        $stmt->execute([':id' => $id]);
+        $attachment = $stmt->fetch();
+        if (!$attachment) {
+            gy_json(['ok' => false, 'error' => 'Attachment not found'], 404);
+        }
+        $path = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $attachment['file_path']);
+        if (is_file($path)) {
+            unlink($path);
+        }
+        $delete = $pdo->prepare('DELETE FROM news_attachments WHERE id = :id');
+        $delete->execute([':id' => $id]);
+        gy_json(['ok' => true]);
     }
 
     if ($action === 'deleteNews') {
@@ -153,6 +255,14 @@ try {
         $id = (int) ($input['id'] ?? 0);
         if ($id <= 0) {
             gy_json(['ok' => false, 'error' => 'Invalid id'], 422);
+        }
+        $attachments = $pdo->prepare('SELECT file_path FROM news_attachments WHERE news_id = :id');
+        $attachments->execute([':id' => $id]);
+        foreach ($attachments->fetchAll() as $attachment) {
+            $path = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $attachment['file_path']);
+            if (is_file($path)) {
+                unlink($path);
+            }
         }
         $stmt = $pdo->prepare('DELETE FROM news WHERE id = :id');
         $stmt->execute([':id' => $id]);
@@ -166,4 +276,21 @@ try {
     }
     $code = $error instanceof PDOException && str_contains($error->getMessage(), 'UNIQUE') ? 409 : 500;
     gy_json(['ok' => false, 'error' => $code === 409 ? 'Slug already exists' : 'Server error'], $code);
+}
+
+function gy_attachment_payload(array|false $row): array
+{
+    if (!$row) {
+        return [];
+    }
+    return [
+        'id' => (int) $row['id'],
+        'news_id' => (int) $row['news_id'],
+        'kind' => $row['kind'],
+        'name' => $row['original_name'],
+        'url' => $row['file_path'],
+        'mime_type' => $row['mime_type'],
+        'file_size' => (int) $row['file_size'],
+        'created_at' => $row['created_at'],
+    ];
 }

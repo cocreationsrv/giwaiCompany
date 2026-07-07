@@ -35,9 +35,28 @@
   }
 
   function bodyToHtml(value) {
+    if (/<[a-z][\s\S]*>/i.test(String(value || ""))) return String(value || "");
     const blocks = String(value || "").split(/\n{2,}/).map((block) => block.trim()).filter(Boolean);
     if (!blocks.length) return "";
     return blocks.map((block) => `<p>${escapeHtml(block).replace(/\n/g, "<br>")}</p>`).join("");
+  }
+
+  function formatFileSize(value) {
+    const size = Number(value || 0);
+    if (size >= 1024 * 1024) return `${(size / 1024 / 1024).toFixed(1)} MB`;
+    if (size >= 1024) return `${Math.round(size / 1024)} KB`;
+    return `${size} B`;
+  }
+
+  function attachmentsToHtml(items) {
+    const files = (items || []).filter((item) => item.kind !== "image");
+    if (!files.length) return "";
+    return `<div class="news-attachments"><h3>${escapeHtml(t("attachmentsTitle"))}</h3><div class="news-attachment-list">${files.map((item) => `
+      <a class="news-attachment" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">
+        <span class="news-attachment-kind">FILE</span>
+        <span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.mime_type || item.kind)} / ${formatFileSize(item.file_size)}</small></span>
+      </a>
+    `).join("")}</div></div>`;
   }
 
   async function fetchJson(url) {
@@ -98,6 +117,7 @@
       <h2 class="section-title">${escapeHtml(item.title)}</h2>
       ${item.excerpt ? `<p class="section-lead">${escapeHtml(item.excerpt)}</p>` : ""}
       <div class="news-body">${bodyToHtml(item.body)}</div>
+      ${attachmentsToHtml(item.attachments)}
     `;
   }
 
