@@ -1,3 +1,5 @@
 .claude/launch.json
 data/site.sqlite
+data/contact-submissions/*.txt
+data/contact-smtp.log
 uploads/news/*

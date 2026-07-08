@@ -219,6 +219,12 @@ body[data-page="education"] .card p, body[data-page="education"] .card .check-li
 .contact-form { padding: 30px; background: #fff; color: var(--c-text); }
 .contact-panel { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-height: 260px; padding: 34px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); }
 .contact-panel p { max-width: 560px; color: rgba(255,255,255,.82); font-size: 17px; }
+body[data-page="home"] .contact { padding: 82px 0; }
+body[data-page="home"] .contact-grid { display: flex; justify-content: center; }
+body[data-page="home"] .contact-grid > div:first-child,
+body[data-page="home"] .contact-panel p { display: none; }
+body[data-page="home"] .contact-panel { min-height: 0; padding: 0; border: 0; background: transparent; align-items: center; }
+body[data-page="home"] .contact-panel .btn { min-height: 66px; padding: 18px 46px; font-size: 17px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .field { margin-bottom: 16px; }
 .field label { display: block; margin-bottom: 5px; color: var(--c-primary); font-size: 13px; font-weight: 700; }

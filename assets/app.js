@@ -1,5 +1,25 @@
 (() => {
   const registry = window.GY_I18N || {};
+  const thanksStatusText = {
+    ja: {
+      savedTitle: "お問い合わせ内容を保存しました",
+      savedLead: "ローカル環境ではメール送信が利用できないため、内容をサーバー内に保存しました。本番サーバーのメール設定後に送信できます。",
+      errorTitle: "送信できませんでした",
+      errorLead: "入力内容をご確認のうえ、時間をおいてもう一度お試しください。解決しない場合はメールでお問い合わせください。"
+    },
+    zh: {
+      savedTitle: "咨询内容已保存",
+      savedLead: "本地环境无法直接发送邮件，因此已将内容保存到服务器内。配置正式服务器邮件后即可发送。",
+      errorTitle: "发送失败",
+      errorLead: "请确认填写内容后稍后再试。如仍无法解决，请通过电子邮件联系我们。"
+    },
+    en: {
+      savedTitle: "Inquiry saved",
+      savedLead: "Email sending is not available in the local environment, so the inquiry was saved on the server. It can be sent after mail is configured on production.",
+      errorTitle: "Submission failed",
+      errorLead: "Please check the form and try again later. If the issue continues, please contact us by email."
+    }
+  };
 
   function dictionary(lang) {
     const source = registry[lang] || registry.ja || {};
@@ -36,8 +56,23 @@
       button.classList.toggle("active", button.dataset.lang === lang);
       button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
     });
+    document.querySelectorAll(".contact-form input[name='lang']").forEach((input) => {
+      input.value = lang;
+    });
     try { localStorage.setItem("gy-lang", lang); } catch (_) {}
+    applyThanksStatus(lang);
     document.dispatchEvent(new CustomEvent("gy:langchange", { detail: { lang } }));
+  }
+
+  function applyThanksStatus(lang) {
+    if (document.body.dataset.page !== "thanks") return;
+    const status = new URLSearchParams(window.location.search).get("status");
+    if (status !== "saved" && status !== "error") return;
+    const messages = thanksStatusText[lang] || thanksStatusText.ja;
+    const title = document.querySelector("[data-i18n='heroTitle']");
+    const lead = document.querySelector("[data-i18n='heroLead']");
+    if (title) title.textContent = status === "saved" ? messages.savedTitle : messages.errorTitle;
+    if (lead) lead.textContent = status === "saved" ? messages.savedLead : messages.errorLead;
   }
 
   function applyContactTopicFromUrl() {
@@ -54,18 +89,11 @@
     if (value) select.value = value;
   }
 
-  function configureFormSuccessPage() {
-    document.querySelectorAll(".contact-form input[name='_next']").forEach((input) => {
-      input.value = new URL("thanks.html", window.location.href).href;
-    });
-  }
-
   function boot() {
     let stored = null;
     try { stored = localStorage.getItem("gy-lang"); } catch (_) {}
     applyLang(stored || document.body.dataset.lang || "ja");
     applyContactTopicFromUrl();
-    configureFormSuccessPage();
     document.querySelectorAll(".lang-switch button, [data-set-lang]").forEach((control) => {
       control.addEventListener("click", (event) => {
         event.preventDefault();
