@@ -254,11 +254,6 @@
     }
     loginView.hidden = false;
     appView.hidden = true;
-    // 初期設定リンクが無効になるように表示制御
-    const setupLink = document.querySelector(".admin-small a[href='admin-setup.html']");
-    if (setupLink) {
-      setupLink.parentElement.textContent = "初期設定は完了しています。";
-    }
   }
 
   function normalizeUrl(value) {

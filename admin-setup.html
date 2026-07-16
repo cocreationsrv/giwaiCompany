@@ -37,10 +37,14 @@
     }
 
     async function boot() {
-      const status = await json("api/admin.php?action=status");
-      if (!status.setupRequired) {
-        message.textContent = "初期設定は完了しています。お知らせ管理へ移動してください。";
-        form.querySelector("button").disabled = true;
+      try {
+        const status = await json("api/admin.php?action=status");
+        if (!status.setupRequired) {
+          // 初期設定済みならログイン画面へリダイレクト
+          window.location.href = "admin-news.html";
+        }
+      } catch (error) {
+        message.textContent = error.message;
       }
     }
 
@@ -57,7 +61,7 @@
       }
     });
 
-    boot().catch((error) => { message.textContent = error.message; });
+    boot();
   </script>
 </body>
 </html>
